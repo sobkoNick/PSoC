@@ -1,0 +1,715 @@
+ 0000                   cpu LMM
+                        .module main.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile ./main.c
+                        .area data(ram, con, rel)
+ 0000                   .dbfile ./main.c
+ 0000           _pTemp::
+ 0000 00                .byte 0
+ 0001 0000              .byte 0,0
+ 0003                   .dbfile D:\Univer\3.1\MICROP~1\CY3214~1\Firmware\USBUART\USBUART\USBUART\main.c
+ 0003                   .dbsym e pTemp _pTemp A[3:3]c
+                        .area data(ram, con, rel)
+ 0000                   .dbfile D:\Univer\3.1\MICROP~1\CY3214~1\Firmware\USBUART\USBUART\USBUART\main.c
+                        .area text(rom, con, rel)
+ 0000                   .dbfile D:\Univer\3.1\MICROP~1\CY3214~1\Firmware\USBUART\USBUART\USBUART\main.c
+ 0000                   .dbfunc e load_analog_data _load_analog_data fV
+ 0000           ;              i -> X+0
+ 0000           _load_analog_data::
+ 0000                   .dbline -1
+ 0000 10                push X
+ 0001 4F                mov X,SP
+ 0002 3801              add SP,1
+ 0004                   .dbline 88
+ 0004           ; /*******************************************************************************
+ 0004           ; * File Name: Main.c
+ 0004           ; * Version 1.0
+ 0004           ; *
+ 0004           ; * Description:
+ 0004           ; * This file contains the main function for the USBUART example project for CY3214 PSoCEvalUSB Kit.
+ 0004           ; *
+ 0004           ; * Note:
+ 0004           ; *
+ 0004           ; ********************************************************************************
+ 0004           ; * Copyright (2011), Cypress Semiconductor Corporation. All rights reserved.
+ 0004           ; ********************************************************************************
+ 0004           ; * This software is owned by Cypress Semiconductor Corporation (Cypress) and is
+ 0004           ; * protected by and subject to worldwide patent protection (United States and
+ 0004           ; * foreign),United States copyright laws and international treaty provisions. 
+ 0004           ; * Cypress hereby grants to licensee a personal, non-exclusive, non-transferable
+ 0004           ; * license to copy, use, modify, create derivative works of, and compile the
+ 0004           ; * Cypress Source Code and derivative works for the sole purpose of creating 
+ 0004           ; * custom software in support of licensee product to be used only in conjunction
+ 0004           ; * with a Cypress integrated circuit as specified in the applicable agreement.
+ 0004           ; * Any reproduction, modification, translation, compilation, or representation of
+ 0004           ; * this software except as specified above is prohibited without the express
+ 0004           ; * written permission of Cypress.
+ 0004           ; *
+ 0004           ; * Disclaimer: CYPRESS MAKES NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, WITH
+ 0004           ; * REGARD TO THIS MATERIAL, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ 0004           ; * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 0004           ; * Cypress reserves the right to make changes without further notice to the
+ 0004           ; * materials described herein. Cypress does not assume any liability arising out
+ 0004           ; * of the application or use of any product or circuit described herein. Cypress 
+ 0004           ; * does not authorize its products for use as critical components in life-support
+ 0004           ; * systems where a malfunction or failure may reasonably be expected to result in 
+ 0004           ; * significant injury to the user. The inclusion of Cypress' product in a life-
+ 0004           ; * support systems application implies that the manufacturer assumes all risk of
+ 0004           ; * such use and in doing so indemnifies Cypress against all charges. Use may be
+ 0004           ; * limited by and subject to the applicable Cypress software license agreement. 
+ 0004           ; *******************************************************************************/
+ 0004           ; 
+ 0004           ; /*************************************************************************************
+ 0004           ;                                 THEORY OF OPERATION
+ 0004           ; * This project demonstrates the use of USBUART user module using CY3214 PSoCEvalUSB Board.
+ 0004           ; * The USBUART user module is used to create a virtual RS232 port on PC using a USB port.
+ 0004           ; * The USBUART modules enumerates as a Comm Port device and data to and fro from the USb device is handled as a RS232 device data.
+ 0004           ; 
+ 0004           ; * This application demonstrates a simple data echo example. The data received from is transmitted back again.
+ 0004           ; * The application starts by executing "boot.asm". "boot.asm" does the
+ 0004           ; * hardware initialization and invokes the "main" function.  The "main"
+ 0004           ; * function completes the initialization of USBUART Module
+ 0004           ; * After initialization of the User Modules, the "main" enters into a loop
+ 0004           ; * which does the following:
+ 0004           ; *     -Checks if any data is received by looking at the count of received data
+ 0004           ; *     -Waits for transmit to be ready
+ 0004           ; *       -the received data is transmitted back.
+ 0004           ; *     - Incase of reception of a Carraige Return, tha API to send CRLF is called.
+ 0004           ; 
+ 0004           ; * Hardware Connections
+ 0004           ; * Connect a USB cable from the board to a free USB port on PC
+ 0004           ; * On connecting for first time, wait for device to get installed.
+ 0004           ; * Ignore the Digital Signature warning when prompted. (Click on 'Continue Anyway')
+ 0004           ; * Check the Device Manager for the comm port number alloted for USBUART device
+ 0004           ; * Open Hyperterminal and connect to the required comm port
+ 0004           ; * Set the comm port settings as follows: 19200-N-8-1. FlowControl: None
+ 0004           ; * Now type any character and see the data being echoed back on the hyper terminal screen
+ 0004           ; * Note: By default, the local echo ing of characters is disabled in Hyperterminal.
+ 0004           ; *************************************************************************************/
+ 0004           ; 
+ 0004           ; 
+ 0004           ; #include <m8c.h>        /* part specific constants and macros */
+ 0004           ; #include "PSoCAPI.h"    /* PSoC API definitions for all User Modules */
+ 0004           ; #include <stdlib.h>
+ 0004           ; 
+ 0004           ; #define USB_STR_SIZE          (3)
+ 0004           ; 
+ 0004           ; #define PERIOD                        (10)                            // one measure period time
+ 0004           ; #define START_TEST_PERIOD     (50000)                         // delay before start measurement
+ 0004           ; 
+ 0004           ; #define DAC_VAL                               (155)
+ 0004           ; #define PERCENTEG                     (20)                            // shparyvatist
+ 0004           ; #define ANALOG_OFSET          (5)
+ 0004           ; #define ANALOG_SIZE           (95+ANALOG_OFSET)
+ 0004           ; 
+ 0004           ; BYTE analog[ANALOG_SIZE];
+ 0004           ; BYTE measure_analog[ANALOG_SIZE];
+ 0004           ; 
+ 0004           ; char pTemp[USB_STR_SIZE] = "";
+ 0004           ; 
+ 0004           ; void load_analog_data(void)
+ 0004           ; {
+ 0004                   .dbline 90
+ 0004           ;       BYTE i;
+ 0004           ;       for (i=0; i<ANALOG_SIZE; i++)
+ 0004 560000            mov [X+0],0
+ 0007 8040              xjmp L5
+ 0009           L2:
+ 0009                   .dbline 91
+ 0009           ;       {
+ 0009                   .dbline 92
+ 0009           ;               if ((i>ANALOG_OFSET)&&(i<ANALOG_OFSET+PERCENTEG))
+ 0009 5005              mov A,5
+ 000B 3B00              cmp A,[X+0]
+ 000D D020              jnc L6
+ 000F           X0:
+ 000F 3D0019            cmp [X+0],25
+ 0012 D01B              jnc L6
+ 0014           X1:
+ 0014                   .dbline 93
+ 0014           ;               {
+ 0014                   .dbline 94
+ 0014           ;                       analog[i] = DAC_VAL;
+ 0014 62D000            mov REG[0xd0],>__r0
+ 0017 5200              mov A,[X+0]
+ 0019 5300              mov [__r1],A
+ 001B 550000            mov [__r0],0
+ 001E 060000            add [__r1],<_analog
+ 0021 0E0000            adc [__r0],>_analog
+ 0024 5100              mov A,[__r0]
+ 0026 60D5              mov REG[0xd5],A
+ 0028 509B              mov A,-101
+ 002A 3F00              mvi [__r1],A
+ 002C                   .dbline 95
+ 002C           ;               }
+ 002C 8019              xjmp L7
+ 002E           L6:
+ 002E                   .dbline 97
+ 002E           ;               else
+ 002E           ;               {
+ 002E                   .dbline 98
+ 002E           ;                       analog[i] = 0;
+ 002E 62D000            mov REG[0xd0],>__r0
+ 0031 5200              mov A,[X+0]
+ 0033 5300              mov [__r1],A
+ 0035 550000            mov [__r0],0
+ 0038 060000            add [__r1],<_analog
+ 003B 0E0000            adc [__r0],>_analog
+ 003E 5100              mov A,[__r0]
+ 0040 60D5              mov REG[0xd5],A
+ 0042 5000              mov A,0
+ 0044 3F00              mvi [__r1],A
+ 0046                   .dbline 99
+ 0046           ;               }
+ 0046           L7:
+ 0046                   .dbline 100
+ 0046           ;       }
+ 0046           L3:
+ 0046                   .dbline 90
+ 0046 7700              inc [X+0]
+ 0048           L5:
+ 0048                   .dbline 90
+ 0048 3D0064            cmp [X+0],100
+ 004B CFBD              jc L2
+ 004D           X2:
+ 004D                   .dbline -2
+ 004D           L1:
+ 004D 38FF              add SP,-1
+ 004F 20                pop X
+ 0050                   .dbline 0 ; func end
+ 0050 7F                ret
+ 0051                   .dbsym l i 0 c
+ 0051                   .dbend
+ 0051                   .dbfunc e delay _delay fV
+ 0051           ;              i -> X+0
+ 0051           ;          count -> X-5
+ 0051           _delay::
+ 0051                   .dbline -1
+ 0051 10                push X
+ 0052 4F                mov X,SP
+ 0053 3802              add SP,2
+ 0055                   .dbline 104
+ 0055           ; }
+ 0055           ; 
+ 0055           ; void delay(int count)
+ 0055           ; {
+ 0055                   .dbline 106
+ 0055           ;       int i;
+ 0055           ;       for (i=count; i; i--)           // 10000 = Delay about 0.1 seccond
+ 0055 52FC              mov A,[X-4]
+ 0057 5401              mov [X+1],A
+ 0059 52FB              mov A,[X-5]
+ 005B 5400              mov [X+0],A
+ 005D 8007              xjmp L12
+ 005F           L9:
+ 005F                   .dbline 107
+ 005F           ;       {
+ 005F                   .dbline 108
+ 005F           ;               asm("nop");
+ 005F 40                        nop
+ 0060           
+ 0060                   .dbline 109
+ 0060           ;       }
+ 0060           L10:
+ 0060                   .dbline 106
+ 0060 7B01              dec [X+1]
+ 0062 1F0000            sbb [X+0],0
+ 0065           L12:
+ 0065                   .dbline 106
+ 0065 3D0000            cmp [X+0],0
+ 0068 BFF6              jnz L9
+ 006A 3D0100            cmp [X+1],0
+ 006D BFF1              jnz L9
+ 006F           X3:
+ 006F                   .dbline -2
+ 006F           L8:
+ 006F 38FE              add SP,-2
+ 0071 20                pop X
+ 0072                   .dbline 0 ; func end
+ 0072 7F                ret
+ 0073                   .dbsym l i 0 I
+ 0073                   .dbsym l count -5 I
+ 0073                   .dbend
+ 0073                   .dbfunc e clear_pTemp _clear_pTemp fV
+ 0073           ;              i -> X+0
+ 0073           _clear_pTemp::
+ 0073                   .dbline -1
+ 0073 10                push X
+ 0074 4F                mov X,SP
+ 0075 3801              add SP,1
+ 0077                   .dbline 113
+ 0077           ; }
+ 0077           ; 
+ 0077           ; void clear_pTemp(void)
+ 0077           ; {
+ 0077                   .dbline 115
+ 0077           ;       BYTE i;
+ 0077           ;       for (i=0; i<USB_STR_SIZE; i++)
+ 0077 560000            mov [X+0],0
+ 007A 8032              xjmp L17
+ 007C           L14:
+ 007C                   .dbline 116
+ 007C           ;       {
+ 007C                   .dbline 117
+ 007C           ;               if (pTemp[i]==0)
+ 007C 62D000            mov REG[0xd0],>__r0
+ 007F 5200              mov A,[X+0]
+ 0081 5300              mov [__r1],A
+ 0083 550000            mov [__r0],0
+ 0086 060000            add [__r1],<_pTemp
+ 0089 0E0000            adc [__r0],>_pTemp
+ 008C 5100              mov A,[__r0]
+ 008E 60D4              mov REG[0xd4],A
+ 0090 3E00              mvi A,[__r1]
+ 0092 3900              cmp A,0
+ 0094 B016              jnz L18
+ 0096                   .dbline 118
+ 0096           ;               {
+ 0096                   .dbline 119
+ 0096           ;                       pTemp[i] = 0x20;
+ 0096 5200              mov A,[X+0]
+ 0098 5300              mov [__r1],A
+ 009A 550000            mov [__r0],0
+ 009D 060000            add [__r1],<_pTemp
+ 00A0 0E0000            adc [__r0],>_pTemp
+ 00A3 5100              mov A,[__r0]
+ 00A5 60D5              mov REG[0xd5],A
+ 00A7 5020              mov A,32
+ 00A9 3F00              mvi [__r1],A
+ 00AB                   .dbline 120
+ 00AB           ;               }
+ 00AB           L18:
+ 00AB                   .dbline 121
+ 00AB           ;       }
+ 00AB           L15:
+ 00AB                   .dbline 115
+ 00AB 7700              inc [X+0]
+ 00AD           L17:
+ 00AD                   .dbline 115
+ 00AD 3D0003            cmp [X+0],3
+ 00B0 CFCB              jc L14
+ 00B2           X4:
+ 00B2                   .dbline -2
+ 00B2           L13:
+ 00B2 38FF              add SP,-1
+ 00B4 20                pop X
+ 00B5                   .dbline 0 ; func end
+ 00B5 7F                ret
+ 00B6                   .dbsym l i 0 c
+ 00B6                   .dbend
+ 00B6                   .dbfunc e main _main fV
+ 00B6           ; current_adc_data -> X+2
+ 00B6           ;              i -> X+1
+ 00B6           ;          index -> X+0
+ 00B6           _main::
+ 00B6                   .dbline -1
+ 00B6 10                push X
+ 00B7 4F                mov X,SP
+ 00B8 3803              add SP,3
+ 00BA                   .dbline 125
+ 00BA           ; }
+ 00BA           ; 
+ 00BA           ; void main(void)
+ 00BA           ; {
+ 00BA                   .dbline 127
+ 00BA           ;       BYTE i;
+ 00BA           ;       BYTE index=0;
+ 00BA 560000            mov [X+0],0
+ 00BD                   .dbline 129
+ 00BD           ;       BYTE current_adc_data;
+ 00BD           ;       M8C_EnableGInt;                                                         /* Enable Global Interrupts */
+ 00BD 7101                      or  F, 01h
+ 00BF           
+ 00BF                   .dbline 130
+ 00BF           ;       USBUART_1_Start(USBUART_1_5V_OPERATION);        /*Start USBUART 5V operation */
+ 00BF 10                push X
+ 00C0 5003              mov A,3
+ 00C2 7C0000            xcall _USBUART_1_Start
+ 00C5 20                pop X
+ 00C6           L21:
+ 00C6                   .dbline 131
+ 00C6           ;       while(!USBUART_1_Init());                                       /* Wait for Device to initialize */
+ 00C6           L22:
+ 00C6                   .dbline 131
+ 00C6 10                push X
+ 00C7 7C0000            xcall _USBUART_1_Init
+ 00CA 62D000            mov REG[0xd0],>__r0
+ 00CD 20                pop X
+ 00CE 3900              cmp A,0
+ 00D0 AFF5              jz L21
+ 00D2                   .dbline 132
+ 00D2           ;       for (i=20; i; i--)
+ 00D2 560114            mov [X+1],20
+ 00D5 800D              xjmp L27
+ 00D7           L24:
+ 00D7                   .dbline 133
+ 00D7           ;       {
+ 00D7                   .dbline 134
+ 00D7           ;               delay(START_TEST_PERIOD);
+ 00D7 50C3              mov A,-61
+ 00D9 08                push A
+ 00DA 5050              mov A,80
+ 00DC 08                push A
+ 00DD 9F72              xcall _delay
+ 00DF 38FE              add SP,-2
+ 00E1                   .dbline 135
+ 00E1           ;       }
+ 00E1           L25:
+ 00E1                   .dbline 132
+ 00E1 7B01              dec [X+1]
+ 00E3           L27:
+ 00E3                   .dbline 132
+ 00E3 3D0100            cmp [X+1],0
+ 00E6 BFF0              jnz L24
+ 00E8                   .dbline 136
+ 00E8           ;       USBUART_1_CPutString("Start Test");
+ 00E8 10                push X
+ 00E9 5023              mov A,>L28
+ 00EB 08                push A
+ 00EC 5023              mov A,<L28
+ 00EE 5C                mov X,A
+ 00EF 18                pop A
+ 00F0 7C0000            xcall _USBUART_1_CPutString
+ 00F3                   .dbline 137
+ 00F3           ;       USBUART_1_PutCRLF();
+ 00F3 7C0000            xcall _USBUART_1_PutCRLF
+ 00F6 20                pop X
+ 00F7                   .dbline 138
+ 00F7           ;       DAC8_1_Start(DAC8_1_HIGHPOWER);                 /* start the DAC8_1  */
+ 00F7 10                push X
+ 00F8 5003              mov A,3
+ 00FA 7C0000            xcall _DAC8_1_Start
+ 00FD 20                pop X
+ 00FE                   .dbline 139
+ 00FE           ;       DAC8_1_WriteBlind(0);
+ 00FE 10                push X
+ 00FF 5000              mov A,0
+ 0101 7C0000            xcall _DAC8_1_WriteBlind
+ 0104 20                pop X
+ 0105                   .dbline 140
+ 0105           ;       ADC_Start(ADC_HIGHPOWER);
+ 0105 10                push X
+ 0106 5003              mov A,3
+ 0108 7C0000            xcall _ADC_Start
+ 010B 20                pop X
+ 010C                   .dbline 141
+ 010C           ;       ADC_GetSamples(0);
+ 010C 10                push X
+ 010D 5000              mov A,0
+ 010F 7C0000            xcall _ADC_GetSamples
+ 0112 20                pop X
+ 0113                   .dbline 142
+ 0113           ;       delay(START_TEST_PERIOD);
+ 0113 50C3              mov A,-61
+ 0115 08                push A
+ 0116 5050              mov A,80
+ 0118 08                push A
+ 0119 9F36              xcall _delay
+ 011B 38FE              add SP,-2
+ 011D                   .dbline 144
+ 011D           ;       // Start measurement
+ 011D           ;       load_analog_data();
+ 011D 9EE1              xcall _load_analog_data
+ 011F                   .dbline 145
+ 011F           ;       for (index=0; index<ANALOG_SIZE; index++)
+ 011F 560000            mov [X+0],0
+ 0122 8053              xjmp L32
+ 0124           L29:
+ 0124                   .dbline 146
+ 0124           ;       {
+ 0124                   .dbline 147
+ 0124           ;               DAC8_1_WriteBlind(analog[index]);
+ 0124 62D000            mov REG[0xd0],>__r0
+ 0127 5200              mov A,[X+0]
+ 0129 5300              mov [__r1],A
+ 012B 550000            mov [__r0],0
+ 012E 060000            add [__r1],<_analog
+ 0131 0E0000            adc [__r0],>_analog
+ 0134 5100              mov A,[__r0]
+ 0136 60D4              mov REG[0xd4],A
+ 0138 3E00              mvi A,[__r1]
+ 013A 10                push X
+ 013B 7C0000            xcall _DAC8_1_WriteBlind
+ 013E 20                pop X
+ 013F                   .dbline 148
+ 013F           ;               delay(PERIOD);
+ 013F 5000              mov A,0
+ 0141 08                push A
+ 0142 500A              mov A,10
+ 0144 08                push A
+ 0145 9F0A              xcall _delay
+ 0147 38FE              add SP,-2
+ 0149           L33:
+ 0149                   .dbline 149
+ 0149           ;               while(ADC_fIsDataAvailable() == 0);     // Loop until value ready 
+ 0149           L34:
+ 0149                   .dbline 149
+ 0149 10                push X
+ 014A 7C0000            xcall _ADC_fIsDataAvailable
+ 014D 62D000            mov REG[0xd0],>__r0
+ 0150 20                pop X
+ 0151 3900              cmp A,0
+ 0153 AFF5              jz L33
+ 0155                   .dbline 150
+ 0155           ;               current_adc_data = ADC_bClearFlagGetData();
+ 0155 10                push X
+ 0156 7C0000            xcall _ADC_bClearFlagGetData
+ 0159 62D000            mov REG[0xd0],>__r0
+ 015C 20                pop X
+ 015D 5402              mov [X+2],A
+ 015F                   .dbline 151
+ 015F           ;               measure_analog[index] = current_adc_data;
+ 015F 5200              mov A,[X+0]
+ 0161 5300              mov [__r1],A
+ 0163 550000            mov [__r0],0
+ 0166 060000            add [__r1],<_measure_analog
+ 0169 0E0000            adc [__r0],>_measure_analog
+ 016C 5100              mov A,[__r0]
+ 016E 60D5              mov REG[0xd5],A
+ 0170 5202              mov A,[X+2]
+ 0172 3F00              mvi [__r1],A
+ 0174                   .dbline 152
+ 0174           ;       }
+ 0174           L30:
+ 0174                   .dbline 145
+ 0174 7700              inc [X+0]
+ 0176           L32:
+ 0176                   .dbline 145
+ 0176 3D0064            cmp [X+0],100
+ 0179 CFAA              jc L29
+ 017B           X6:
+ 017B                   .dbline 154
+ 017B           ;       //Send measured data
+ 017B           ;       USBUART_1_CPutString("i,  input,  output");
+ 017B 10                push X
+ 017C 5010              mov A,>L36
+ 017E 08                push A
+ 017F 5010              mov A,<L36
+ 0181 5C                mov X,A
+ 0182 18                pop A
+ 0183 7C0000            xcall _USBUART_1_CPutString
+ 0186                   .dbline 155
+ 0186           ;       USBUART_1_PutCRLF();
+ 0186 7C0000            xcall _USBUART_1_PutCRLF
+ 0189 20                pop X
+ 018A                   .dbline 156
+ 018A           ;       for (index=0; index<ANALOG_SIZE; index++)
+ 018A 560000            mov [X+0],0
+ 018D 80D6              xjmp L40
+ 018F           L37:
+ 018F                   .dbline 157
+ 018F           ;       {
+ 018F                   .dbline 158
+ 018F           ;               ltoa(pTemp, index, 10);
+ 018F 5000              mov A,0
+ 0191 08                push A
+ 0192 500A              mov A,10
+ 0194 08                push A
+ 0195 62D000            mov REG[0xd0],>__r0
+ 0198 5200              mov A,[X+0]
+ 019A 5300              mov [__r3],A
+ 019C 5000              mov A,0
+ 019E 08                push A
+ 019F 08                push A
+ 01A0 08                push A
+ 01A1 5100              mov A,[__r3]
+ 01A3 08                push A
+ 01A4 5000              mov A,>_pTemp
+ 01A6 08                push A
+ 01A7 5000              mov A,<_pTemp
+ 01A9 08                push A
+ 01AA 7C0000            xcall _ltoa
+ 01AD 38F8              add SP,-8
+ 01AF                   .dbline 159
+ 01AF           ;               clear_pTemp();
+ 01AF 9EC2              xcall _clear_pTemp
+ 01B1                   .dbline 160
+ 01B1           ;               USBUART_1_Write(pTemp, USB_STR_SIZE); /* Else, send back the received data */
+ 01B1 10                push X
+ 01B2 5003              mov A,3
+ 01B4 08                push A
+ 01B5 5000              mov A,>_pTemp
+ 01B7 08                push A
+ 01B8 5000              mov A,<_pTemp
+ 01BA 08                push A
+ 01BB 7C0000            xcall _USBUART_1_Write
+ 01BE 38FD              add SP,-3
+ 01C0 20                pop X
+ 01C1                   .dbline 161
+ 01C1           ;               USBUART_1_CPutString(",  ");
+ 01C1 10                push X
+ 01C2 500C              mov A,>L41
+ 01C4 08                push A
+ 01C5 500C              mov A,<L41
+ 01C7 5C                mov X,A
+ 01C8 18                pop A
+ 01C9 7C0000            xcall _USBUART_1_CPutString
+ 01CC 20                pop X
+ 01CD                   .dbline 162
+ 01CD           ;               ltoa(pTemp, analog[index], 10);
+ 01CD 5000              mov A,0
+ 01CF 08                push A
+ 01D0 500A              mov A,10
+ 01D2 08                push A
+ 01D3 62D000            mov REG[0xd0],>__r0
+ 01D6 5200              mov A,[X+0]
+ 01D8 5300              mov [__r1],A
+ 01DA 550000            mov [__r0],0
+ 01DD 060000            add [__r1],<_analog
+ 01E0 0E0000            adc [__r0],>_analog
+ 01E3 5100              mov A,[__r0]
+ 01E5 60D4              mov REG[0xd4],A
+ 01E7 3E00              mvi A,[__r1]
+ 01E9 5300              mov [__r3],A
+ 01EB 5000              mov A,0
+ 01ED 08                push A
+ 01EE 08                push A
+ 01EF 08                push A
+ 01F0 5100              mov A,[__r3]
+ 01F2 08                push A
+ 01F3 5000              mov A,>_pTemp
+ 01F5 08                push A
+ 01F6 5000              mov A,<_pTemp
+ 01F8 08                push A
+ 01F9 7C0000            xcall _ltoa
+ 01FC 38F8              add SP,-8
+ 01FE                   .dbline 163
+ 01FE           ;               clear_pTemp();
+ 01FE 9E73              xcall _clear_pTemp
+ 0200                   .dbline 164
+ 0200           ;               USBUART_1_Write(pTemp, USB_STR_SIZE); /* Else, send back the received data */
+ 0200 10                push X
+ 0201 5003              mov A,3
+ 0203 08                push A
+ 0204 5000              mov A,>_pTemp
+ 0206 08                push A
+ 0207 5000              mov A,<_pTemp
+ 0209 08                push A
+ 020A 7C0000            xcall _USBUART_1_Write
+ 020D 38FD              add SP,-3
+ 020F 20                pop X
+ 0210                   .dbline 165
+ 0210           ;               USBUART_1_CPutString(",  ");
+ 0210 10                push X
+ 0211 500C              mov A,>L41
+ 0213 08                push A
+ 0214 500C              mov A,<L41
+ 0216 5C                mov X,A
+ 0217 18                pop A
+ 0218 7C0000            xcall _USBUART_1_CPutString
+ 021B 20                pop X
+ 021C                   .dbline 166
+ 021C           ;               ltoa(pTemp, measure_analog[index], 10);
+ 021C 5000              mov A,0
+ 021E 08                push A
+ 021F 500A              mov A,10
+ 0221 08                push A
+ 0222 62D000            mov REG[0xd0],>__r0
+ 0225 5200              mov A,[X+0]
+ 0227 5300              mov [__r1],A
+ 0229 550000            mov [__r0],0
+ 022C 060000            add [__r1],<_measure_analog
+ 022F 0E0000            adc [__r0],>_measure_analog
+ 0232 5100              mov A,[__r0]
+ 0234 60D4              mov REG[0xd4],A
+ 0236 3E00              mvi A,[__r1]
+ 0238 5300              mov [__r3],A
+ 023A 5000              mov A,0
+ 023C 08                push A
+ 023D 08                push A
+ 023E 08                push A
+ 023F 5100              mov A,[__r3]
+ 0241 08                push A
+ 0242 5000              mov A,>_pTemp
+ 0244 08                push A
+ 0245 5000              mov A,<_pTemp
+ 0247 08                push A
+ 0248 7C0000            xcall _ltoa
+ 024B 38F8              add SP,-8
+ 024D                   .dbline 167
+ 024D           ;               clear_pTemp();
+ 024D 9E24              xcall _clear_pTemp
+ 024F                   .dbline 168
+ 024F           ;               USBUART_1_Write(pTemp, USB_STR_SIZE); /* Else, send back the received data */
+ 024F 10                push X
+ 0250 5003              mov A,3
+ 0252 08                push A
+ 0253 5000              mov A,>_pTemp
+ 0255 08                push A
+ 0256 5000              mov A,<_pTemp
+ 0258 08                push A
+ 0259 7C0000            xcall _USBUART_1_Write
+ 025C 38FD              add SP,-3
+ 025E                   .dbline 169
+ 025E           ;               USBUART_1_PutCRLF();
+ 025E 7C0000            xcall _USBUART_1_PutCRLF
+ 0261 20                pop X
+ 0262                   .dbline 170
+ 0262           ;       }
+ 0262           L38:
+ 0262                   .dbline 156
+ 0262 7700              inc [X+0]
+ 0264           L40:
+ 0264                   .dbline 156
+ 0264 3D0064            cmp [X+0],100
+ 0267 CF27              jc L37
+ 0269           X7:
+ 0269                   .dbline 171
+ 0269           ;       USBUART_1_CPutString("End of Test");            
+ 0269 10                push X
+ 026A 5000              mov A,>L42
+ 026C 08                push A
+ 026D 5000              mov A,<L42
+ 026F 5C                mov X,A
+ 0270 18                pop A
+ 0271 7C0000            xcall _USBUART_1_CPutString
+ 0274 20                pop X
+ 0275           L43:
+ 0275                   .dbline 173
+ 0275           ;       while(1)
+ 0275           ;       {
+ 0275                   .dbline 175
+ 0275           ;               // End
+ 0275           ;       }
+ 0275           L44:
+ 0275                   .dbline 172
+ 0275 8FFF              xjmp L43
+ 0277           X5:
+ 0277                   .dbline -2
+ 0277           L20:
+ 0277 38FD              add SP,-3
+ 0279 20                pop X
+ 027A                   .dbline 0 ; func end
+ 027A 8FFF              jmp .
+ 027C                   .dbsym l current_adc_data 2 c
+ 027C                   .dbsym l i 1 c
+ 027C                   .dbsym l index 0 c
+ 027C                   .dbend
+                        .area data(ram, con, rel)
+ 0000                   .dbfile D:\Univer\3.1\MICROP~1\CY3214~1\Firmware\USBUART\USBUART\USBUART\main.c
+ 0000           _measure_analog::
+ 0000 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000  .word 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ 003C 00000000000000000000      .word 0,0,0,0,0
+ 0046 00000000000000000000      .word 0,0,0,0,0
+ 0050 00000000000000000000      .word 0,0,0,0,0
+ 005A 00000000000000000000      .byte 0,0,0,0,0,0,0,0,0,0
+ 0064                   .dbsym e measure_analog _measure_analog A[100:100]c
+                        .area data(ram, con, rel)
+ 0000                   .dbfile D:\Univer\3.1\MICROP~1\CY3214~1\Firmware\USBUART\USBUART\USBUART\main.c
+ 0000           _analog::
+ 0000 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000  .word 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ 003C 00000000000000000000      .word 0,0,0,0,0
+ 0046 00000000000000000000      .word 0,0,0,0,0
+ 0050 00000000000000000000      .word 0,0,0,0,0
+ 005A 00000000000000000000      .byte 0,0,0,0,0,0,0,0,0,0
+ 0064                   .dbsym e analog _analog A[100:100]c
+                        .area lit(rom, con, rel)
+ 0000           L42:
+ 0000 456E64206F66205465737400  .byte 'E,'n,'d,32,'o,'f,32,'T,'e,'s,'t,0
+ 000C           L41:
+ 000C 2C202000          .byte 44,32,32,0
+ 0010           L36:
+ 0010 692C2020696E7075742C20206F757470  .byte 'i,44,32,32,'i,'n,'p,'u,'t,44,32,32,'o,'u,'t,'p
+ 0020 757400            .byte 'u,'t,0
+ 0023           L28:
+ 0023 5374617274205465737400    .byte 'S,'t,'a,'r,'t,32,'T,'e,'s,'t,0

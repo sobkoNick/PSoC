@@ -1,0 +1,43 @@
+# DO NOT DELETE
+./obj/boot.o : \
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/CY8C24~1/m8c.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/CY8C24~1/m8ssc.inc\
+   D:\Univer\3.1\MICROP~1\CY3214~1\Firmware\USBUART\USBUART\USBUART\lib\GLOBAL~1.INC\
+   D:\Univer\3.1\MICROP~1\CY3214~1\Firmware\USBUART\USBUART\USBUART\memory.inc
+./obj/main.o :  ./lib/ADC.h ./lib/DAC8_1.h ./lib/PSoCAPI.h\
+   ./lib/PSOCGP~1.H ./lib/USBUAR~1.H\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/CY8C24~1/m8c.h\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/_const.h\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/limits.h\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/stdlib.h
+./lib/obj/adc.o :  ./lib/ADC.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/CY8C24~1/m8c.inc\
+   D:\Univer\3.1\MICROP~1\CY3214~1\Firmware\USBUART\USBUART\USBUART\memory.inc
+./lib/obj/adcint.o :  ./lib/ADC.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/CY8C24~1/m8c.inc\
+   D:\Univer\3.1\MICROP~1\CY3214~1\Firmware\USBUART\USBUART\USBUART\memory.inc
+./lib/obj/dac8_1.o :  ./lib/DAC8_1.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/CY8C24~1/m8c.inc\
+   D:\Univer\3.1\MICROP~1\CY3214~1\Firmware\USBUART\USBUART\USBUART\memory.inc
+./lib/obj/psocconfig.o :  ./lib/GLOBAL~1.INC\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/CY8C24~1/m8c.inc\
+   D:\Univer\3.1\MICROP~1\CY3214~1\Firmware\USBUART\USBUART\USBUART\memory.inc
+./lib/obj/psocconfigtbl.o : \
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/CY8C24~1/m8c.inc
+./lib/obj/usbuart_1.o :  ./lib/USBUAR~1.INC ./lib/USBUAR~2.INC\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/CY8C24~1/m8c.inc\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/CY8C24~1/m8ssc.inc\
+   D:\Univer\3.1\MICROP~1\CY3214~1\Firmware\USBUART\USBUART\USBUART\memory.inc
+./lib/obj/usbuart_1_cls_cdc.o :  ./lib/USBUAR~1.INC ./lib/USBUAR~2.INC\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/CY8C24~1/m8c.inc\
+   D:\Univer\3.1\MICROP~1\CY3214~1\Firmware\USBUART\USBUART\USBUART\memory.inc
+./lib/obj/usbuart_1_descr.o :  ./lib/USBUAR~1.INC ./lib/USBUAR~2.INC\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/CY8C24~1/m8c.inc
+./lib/obj/usbuart_1_drv.o :  ./lib/USBUAR~1.INC ./lib/USBUAR~2.INC\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/CY8C24~1/m8c.inc\
+   D:\Univer\3.1\MICROP~1\CY3214~1\Firmware\USBUART\USBUART\USBUART\memory.inc
+./lib/obj/usbuart_1_std.o :  ./lib/USBUAR~1.INC ./lib/USBUAR~2.INC\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/CY8C24~1/m8c.inc
+./lib/obj/usbuart_1int.o :  ./lib/USBUAR~1.INC\
+   C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/include/CY8C24~1/m8c.inc\
+   D:\Univer\3.1\MICROP~1\CY3214~1\Firmware\USBUART\USBUART\USBUART\memory.inc

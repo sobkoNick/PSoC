@@ -1,0 +1,28 @@
+Starting MAKE...
+creating project.mk 
+lib/adc.asm
+lib/adcint.asm
+lib/dac8_1.asm
+lib/psocconfig.asm
+lib/psocconfigtbl.asm
+lib/usbuart_1.asm
+lib/usbuart_1_cls_cdc.asm
+lib/usbuart_1_descr.asm
+lib/usbuart_1_drv.asm
+lib/usbuart_1_std.asm
+lib/usbuart_1int.asm
+./boot.asm
+./main.c
+Linking..
+LMM info: area 'InterruptRAM' uses 66 bytes in SRAM bank 0
+LMM info: area 'data' item of 100 bytes allocated in SRAM page 0
+LMM info: area 'virtual_registers' uses 7 bytes in SRAM page 0
+LMM info: area 'data' item of 3 bytes allocated in SRAM page 0
+LMM info: area 'data' item of 100 bytes allocated in SRAM page 1
+  ROM 34% full. 5430 out of 16384 bytes used (does not include absolute areas).
+  RAM 36% full. 276 bytes used (does not include stack usage).
+idata dump at output/USBUART.idata
+Built with ICCM8C STD V7.04
+ 
+USBUART - 0 error(s) 0 warning(s) 22:46:49
+

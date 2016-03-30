@@ -1,0 +1,7 @@
+flash 16D6 SRAM   42:
+ 00 100 bytes
+flash 16DA SRAM   AD:
+ <size at next line>   0  0  0
+  [size:] 3 bytes
+flash 16E0 SRAM  100:
+ 00 100 bytes

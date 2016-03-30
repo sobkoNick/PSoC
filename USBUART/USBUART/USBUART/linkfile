@@ -1,0 +1,6 @@
+-F0x30 -g -blit:0x1a0.0x3fff 
+ -bdata:0.0x2ff -bSSCParmBlk:0x00F7.0x00FF -BInterruptRAM:0 -Bvirtual_registers  
+ -Busbuart_RAM 
+ -o"output/USBUART" 
+ ./obj/main.o  
+ D:/Univer/3.1/MICROP~1/CY3214~1/Firmware/USBUART/USBUART/USBUART/lib/libPSoc.a -LC:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/lib/LMM/eightpages C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/lib/CY8C24090/cms.a C:/PROGRA~2/Cypress/PSOCDE~1/5.1/Common/CYPRES~3/tools/lib/LMM/UASW/MAC/arith.a  
